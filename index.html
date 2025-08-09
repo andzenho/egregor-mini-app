@@ -73,11 +73,39 @@
     <!-- Telegram Web Apps API -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
-<!-- FIXED: Reduced padding for a wider content area -->
 <body class="p-2 sm:p-4 md:p-6">
 
-    <!-- Main application container -->
-    <div class="max-w-md mx-auto bg-neutral-900 p-6 rounded-3xl shadow-2xl border border-gray-800">
+    <!-- Subscription Gate Container -->
+    <div id="subscription-container" class="max-w-md mx-auto">
+        <div class="bg-neutral-900 rounded-3xl shadow-2xl border border-gray-800 text-center overflow-hidden">
+            <!-- FIXED: Image path updated to local file -->
+            <img src="start.png" alt="На старт!" class="w-full">
+            <div class="p-6">
+                <h1 class="text-2xl font-bold text-white mb-4 font-heading">Рады видеть тебя на&nbsp;нашем мини-курсе!</h1>
+                <p class="text-gray-400 mb-6">Чтобы получить доступ к&nbsp;нему, нужно подписаться на&nbsp;мой Телеграм-канал EGREGOR</p>
+                
+                <a id="subscribe-link" href="https://t.me/+CpRx-dZO-59iNjcy" target="_blank" class="block w-full bg-gradient-to-br from-[#5FEAFF] to-[#4C87FF] text-white font-semibold py-3 px-8 rounded-full shadow-xl transition-all duration-300 hover:scale-105 text-shadow mb-4">
+                    Подписаться
+                </a>
+                
+                <div class="flex items-start text-left gap-x-3 text-gray-500 text-xs my-6 p-3 bg-neutral-800/50 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>
+                        После подписки вернитесь сюда и&nbsp;нажмите кнопку ниже, если доступ не&nbsp;открылся автоматически. Приложение не&nbsp;закроется&nbsp;— чтобы его снова открыть, нажмите на&nbsp;кнопку «Быстрый старт в&nbsp;маркетинге» в&nbsp;меню бота.
+                    </span>
+                </div>
+
+                <button id="check-subscription-button" class="w-full bg-gray-700 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition-colors duration-300 hover:bg-gray-600">
+                    Я подписался, проверить
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main application container (hidden by default) -->
+    <div id="app-container" class="hidden max-w-md mx-auto bg-neutral-900 p-6 rounded-3xl shadow-2xl border border-gray-800">
         <!-- App header with gradient text -->
         <h1 class="text-3xl font-bold text-center mb-6 font-heading bg-clip-text text-transparent bg-gradient-to-br from-[#5FEAFF] to-[#4C87FF]">EGREGOR SCHOOL</h1>
 
@@ -117,7 +145,6 @@
             
             <!-- Extra content for Lesson 3 -->
             <div id="lesson-3-extra-content" class="hidden space-y-6 mt-8">
-                <!-- Card 1: What is a personal review? -->
                 <div class="bg-neutral-900/50 rounded-2xl shadow-lg p-6 border border-gray-700/50">
                     <h3 class="font-heading text-xl text-white mb-2">Что такое личный разбор?</h3>
                     <p class="text-gray-400 mb-6 text-sm">Разборы&nbsp;— это мое искусство. В&nbsp;общей сложности я&nbsp;потратил на&nbsp;это >10&nbsp;000 часов</p>
@@ -127,8 +154,6 @@
                         <li>Формат работы: <span class="font-semibold text-white">бесплатный онлайн-созвон на&nbsp;40-60 минут по&nbsp;ZOOM</span></li>
                     </ul>
                 </div>
-
-                <!-- Card 2: What will you get? -->
                 <div class="bg-neutral-900/50 rounded-2xl shadow-lg p-6 border border-gray-700/50">
                     <h3 class="font-heading text-xl text-white mb-6">Что ты&nbsp;получишь?</h3>
                      <ul class="styled-list space-y-4">
@@ -139,8 +164,6 @@
                         <li>Погрузим во&nbsp;внутрянку моих проектов, покажем, как внутри них строится работа. Как я&nbsp;стабильно получаю 700.000 рублей на&nbsp;маркетинге.</li>
                     </ul>
                 </div>
-                
-                <!-- Second CTA Button -->
                 <div class="pt-4">
                      <a href="https://www.gregedu.ru/forma?utm_source=tg&utm_medium=bot&utm_campaign=voronka_3_uroka" target="_blank" class="w-full bg-gradient-to-br from-[#5FEAFF] to-[#4C87FF] text-white font-semibold py-4 px-6 rounded-full shadow-xl transition-all duration-300 hover:scale-105 flex items-center justify-center text-shadow text-lg">
                         <span>Попасть на&nbsp;разборы</span>
@@ -154,7 +177,7 @@
         </div>
 
         <!-- Link card for the Telegram channel -->
-        <a href="https://t.me/+CpRx-dZO-59iNjcy" target="_blank" class="block mt-6">
+        <a id="footer-tg-link" href="https://t.me/+CpRx-dZO-59iNjcy" target="_blank" class="hidden mt-6">
             <div class="bg-gradient-to-br from-[#5FEAFF] to-[#4C87FF] p-6 rounded-3xl shadow-lg border border-sky-800 flex items-center justify-center space-x-4 transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl cursor-pointer">
                 <div>
                     <h3 class="text-xl font-bold text-white mb-1 font-heading text-center text-shadow">Telegram-канал EGREGOR</h3>
@@ -162,18 +185,6 @@
                 </div>
             </div>
         </a>
-    </div>
-
-    <!-- Modal window for success messages -->
-    <div id="success-modal" class="fixed inset-0 bg-gray-900 bg-opacity-70 hidden flex items-center justify-center p-4 z-50">
-        <div class="bg-neutral-800 rounded-xl p-8 shadow-2xl text-center max-w-sm w-full transform transition-all duration-300 scale-95 opacity-0 border border-gray-700" id="modal-content">
-            <div class="flex items-center justify-center mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-            </div>
-            <h2 id="modal-title" class="text-2xl font-bold text-gray-100 mb-2"></h2>
-            <p id="modal-text" class="text-gray-300 mb-6"></p>
-            <button id="modal-close-button" class="bg-indigo-600 text-white font-semibold py-2 px-6 rounded-full hover:bg-indigo-700 transition-colors">Закрыть</button>
-        </div>
     </div>
 
     <script>
@@ -203,7 +214,16 @@
                     videoIframe: `<div class="video-container"><iframe src="https://vkvideo.ru/video_ext.php?oid=-225480090&id=456239024&hd=2&autoplay=1" title="УРОК #3 — ПЛАН действий для выхода на 150.000 рублей" allow="autoplay; encrypted-media; fullscreen; picture-in-picture; screen-wake-lock;" frameborder="0" allowfullscreen></iframe></div>`,
                 }
             ];
+            
+            // --- KEYS & DOM ELEMENTS ---
             const progressKey = 'egregorSchoolLessonIndex';
+            const subscriptionKey = 'egregorSchoolSubscribed';
+
+            const subscriptionContainer = document.getElementById('subscription-container');
+            const appContainer = document.getElementById('app-container');
+            const subscribeLink = document.getElementById('subscribe-link');
+            const checkSubscriptionButton = document.getElementById('check-subscription-button');
+            const footerTgLink = document.getElementById('footer-tg-link');
 
             const lessonTitleElement = document.getElementById('lesson-title');
             const lessonContentContainer = document.getElementById('lesson-content-container');
@@ -213,28 +233,25 @@
             const navButtonsContainerMain = document.getElementById('nav-buttons-container-main');
             const navButtonsContainerSecondary = document.getElementById('nav-buttons-container-secondary');
             const progressBar = document.getElementById('progress-bar');
-            const successModal = document.getElementById('success-modal');
-            const modalContent = document.getElementById('modal-content');
-            const modalTitle = document.getElementById('modal-title');
-            const modalText = document.getElementById('modal-text');
-            const lesson3ExtraContent = document.getElementById('lesson-3-extra-content');
-
+            
             let currentLessonIndex = parseInt(localStorage.getItem(progressKey)) || 0;
+            let hasClickedSubscribe = false;
 
-            const showModal = (title, message) => {
-                modalTitle.innerHTML = title;
-                modalText.innerHTML = message;
-                successModal.classList.remove('hidden');
-                setTimeout(() => {
-                    modalContent.classList.add('scale-100', 'opacity-100');
-                    modalContent.classList.remove('scale-95', 'opacity-0');
-                }, 50);
+            // --- FUNCTIONS ---
+
+            const showApp = () => {
+                subscriptionContainer.classList.add('hidden');
+                appContainer.classList.remove('hidden');
+                footerTgLink.classList.remove('hidden');
+                footerTgLink.classList.add('block');
+                renderLesson(currentLessonIndex);
             };
 
-            const hideModal = () => {
-                modalContent.classList.remove('scale-100', 'opacity-100');
-                modalContent.classList.add('scale-95', 'opacity-0');
-                setTimeout(() => successModal.classList.add('hidden'), 300);
+            const showSubscription = () => {
+                subscriptionContainer.classList.remove('hidden');
+                appContainer.classList.add('hidden');
+                footerTgLink.classList.add('hidden');
+                footerTgLink.classList.remove('block');
             };
 
             const renderLesson = (index) => {
@@ -296,6 +313,25 @@
                 container.innerHTML = buttonsHtml;
             };
 
+            // --- EVENT LISTENERS ---
+            subscribeLink.addEventListener('click', () => {
+                hasClickedSubscribe = true;
+            });
+            
+            checkSubscriptionButton.addEventListener('click', () => {
+                localStorage.setItem(subscriptionKey, 'true');
+                showApp();
+            });
+
+            window.addEventListener('focus', () => {
+                if (hasClickedSubscribe && !localStorage.getItem(subscriptionKey)) {
+                    setTimeout(() => {
+                        localStorage.setItem(subscriptionKey, 'true');
+                        showApp();
+                    }, 500);
+                }
+            });
+
             document.body.addEventListener('click', (e) => {
                 const button = e.target.closest('button');
                 if (!button) return;
@@ -315,13 +351,15 @@
                             renderLesson(currentLessonIndex);
                         }
                         break;
-                    case 'modal-close-button':
-                        hideModal();
-                        break;
                 }
             });
             
-            renderLesson(currentLessonIndex);
+            // --- INITIALIZATION ---
+            if (localStorage.getItem(subscriptionKey)) {
+                showApp();
+            } else {
+                showSubscription();
+            }
         });
     </script>
 </body>
