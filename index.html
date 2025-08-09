@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EGREGOR SCHOOL</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Importing fonts: Montserrat for headings and Open Sans for text */
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Open+Sans:wght@400;600&display=swap');
+        body {
+            font-family: 'Open Sans', sans-serif; /* Main font */
+            background-color: #121212; /* Deep dark background */
+            color: #e5e7eb; /* Light default text */
+            scroll-behavior: smooth;
+        }
+        .font-heading {
+            font-family: 'Montserrat', sans-serif;
+        }
+        /* Container for responsive video */
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%; /* 16:9 aspect ratio */
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        /* Bulletproof list styling with pseudo-elements */
+        .styled-list {
+            list-style: none;
+            padding-left: 0;
+        }
+        .styled-list li {
+            position: relative;
+            padding-left: 28px; /* Space for the bullet + gap */
+        }
+        .styled-list li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 6px; /* Fine-tuned for vertical alignment */
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: linear-gradient(to bottom right, #5FEAFF, #4C87FF);
+            box-shadow: 0 0 10px 2px rgba(95, 234, 255, 0.4);
+        }
+
+        /* Shimmer animation for the progress bar */
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .progress-bar-animated {
+            background: linear-gradient(to right, #4C87FF, #5FEAFF, #4C87FF);
+            background-size: 200% 100%;
+            animation: shimmer 6s infinite linear;
+            box-shadow: 0 0 10px rgba(95, 234, 255, 0.4);
+        }
+
+        /* Text shadow for buttons */
+        .text-shadow {
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+        }
+    </style>
+    <!-- Telegram Web Apps API -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body class="p-4 sm:p-6 md:p-8">
+
+    <!-- Main application container -->
+    <div class="max-w-md mx-auto bg-neutral-900 p-6 rounded-3xl shadow-2xl border border-gray-800">
+        <!-- App header with gradient text -->
+        <h1 class="text-3xl font-bold text-center mb-6 font-heading bg-clip-text text-transparent bg-gradient-to-br from-[#5FEAFF] to-[#4C87FF]">EGREGOR SCHOOL</h1>
+
+        <!-- Progress indicator -->
+        <div class="relative w-full h-2 rounded-full bg-gray-700 mb-6 overflow-hidden">
+            <div id="progress-bar" class="h-2 rounded-full transition-all duration-500 ease-in-out" style="width: 0%;"></div>
+        </div>
+        
+        <!-- Lesson container -->
+        <div id="lesson-container" class="bg-neutral-800 rounded-3xl shadow-lg p-6 mb-6">
+            <!-- Lesson title -->
+            <h2 id="lesson-title" class="text-2xl font-bold text-gray-100 mb-6 font-heading"></h2>
+            
+            <!-- Video container -->
+            <div id="lesson-video-container" class="rounded-2xl mb-4 overflow-hidden shadow-lg"></div>
+
+            <!-- Lesson text content -->
+            <div id="lesson-content-container" class="text-gray-300 text-base leading-relaxed mt-8"></div>
+
+            <!-- Navigation buttons for lessons 1 & 3 -->
+            <div id="nav-buttons-container-main" class="flex justify-center mt-8 space-x-4"></div>
+            
+            <!-- Homework block (for lesson 2) -->
+            <div id="homework-block" class="mt-8 p-6 bg-neutral-900/50 rounded-2xl border border-gray-700 space-y-4 hidden">
+                <h3 class="text-xl font-bold text-gray-100 font-heading text-center">Твое Домашнее Задание</h3>
+                <p class="text-gray-300 text-sm text-center">Ты&nbsp;уже знаешь про 4&nbsp;направления, поэтому сейчас нужно:</p>
+                <div class="border-t border-b border-gray-700 py-4">
+                    <ul id="homework-list" class="styled-list space-y-4">
+                        <!-- JS will populate this -->
+                    </ul>
+                </div>
+                <p class="text-gray-300 text-sm">Главное тут не&nbsp;стесняться, писать, как получается. Сразу после выполнения ДЗ&nbsp;мы&nbsp;свяжемся с&nbsp;тобой и&nbsp;поможем с&nbsp;каждым вопросом.</p>
+                <div class="flex justify-center">
+                    <a href="https://t.me/m/ruJF1WznM2Qy" target="_blank" class="text-center block bg-gradient-to-br from-[#5FEAFF] to-[#4C87FF] text-white font-semibold py-3 px-8 rounded-full shadow-xl transition-all duration-300 hover:scale-105 w-full text-shadow">Сдать домашку</a>
+                </div>
+            </div>
+            
+            <!-- Extra content for Lesson 3 -->
+            <div id="lesson-3-extra-content" class="hidden space-y-6 mt-8">
+                <!-- Card 1: What is a personal review? -->
+                <div class="bg-neutral-900/50 rounded-2xl shadow-lg p-6 border border-gray-700/50">
+                    <h3 class="font-heading text-xl text-white mb-2">Что такое личный разбор?</h3>
+                    <p class="text-gray-400 mb-6 text-sm">Разборы&nbsp;— это мое искусство. В&nbsp;общей сложности я&nbsp;потратил на&nbsp;это >10&nbsp;000 часов</p>
+                    <ul class="styled-list space-y-4">
+                        <li>Это единственный вариант поработать со&nbsp;мной и&nbsp;моей командой бесплатно</li>
+                        <li>Это отдельный продукт, цель которого&nbsp;— открыть тебе глаза на&nbsp;то, как конкретно ты&nbsp;сможешь зарабатывать на&nbsp;маркетинге, и&nbsp;что для этого нужно сделать</li>
+                        <li>Формат работы: <span class="font-semibold text-white">бесплатный онлайн-созвон на&nbsp;40-60 минут по&nbsp;ZOOM</span></li>
+                    </ul>
+                </div>
+
+                <!-- Card 2: What will you get? -->
+                <div class="bg-neutral-900/50 rounded-2xl shadow-lg p-6 border border-gray-700/50">
+                    <h3 class="font-heading text-xl text-white mb-6">Что ты&nbsp;получишь?</h3>
+                     <ul class="styled-list space-y-4">
+                        <li>Поможем выбрать одно из&nbsp;4-х направлений. Разберем, как тебе быстро изучить одно из&nbsp;них и&nbsp;построим готовый план действий</li>
+                        <li>Покажем, с&nbsp;кем работать, что писать, какие первые шаги сделать, чтобы&nbsp;быстро найти клиентов и&nbsp;получить деньги на&nbsp;услугах</li>
+                        <li>Расскажем про все подводные камни, погрузим тебя в&nbsp;основы маркетинга и&nbsp;работу с&nbsp;клиентами. Чтобы&nbsp;ты&nbsp;понимал, что можно ожидать в&nbsp;этой сфере</li>
+                        <li>Дадим взгляд со&nbsp;стороны. Раскроем на&nbsp;примере реальных кейсов то, как с&nbsp;нуля за&nbsp;1-2 месяца выйти на&nbsp;стабильные 100.000 рублей на&nbsp;маркетинге.</li>
+                        <li>Погрузим во&nbsp;внутрянку моих проектов, покажем, как внутри них строится работа. Как я&nbsp;стабильно получаю 700.000 рублей на&nbsp;маркетинге.</li>
+                    </ul>
+                </div>
+                
+                <!-- Second CTA Button -->
+                <div class="pt-4">
+                     <a href="https://www.gregedu.ru/forma?utm_source=tg&utm_medium=bot&utm_campaign=voronka_3_uroka" target="_blank" class="w-full bg-gradient-to-br from-[#5FEAFF] to-[#4C87FF] text-white font-semibold py-4 px-6 rounded-full shadow-xl transition-all duration-300 hover:scale-105 flex items-center justify-center text-shadow text-lg">
+                        <span>Попасть на&nbsp;разборы</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Navigation buttons for lesson 2 (after homework) -->
+            <div id="nav-buttons-container-secondary" class="flex justify-center mt-8 space-x-4"></div>
+        </div>
+
+        <!-- Link card for the Telegram channel -->
+        <a href="https://t.me/+CpRx-dZO-59iNjcy" target="_blank" class="block mt-6">
+            <div class="bg-gradient-to-br from-[#5FEAFF] to-[#4C87FF] p-6 rounded-3xl shadow-lg border border-sky-800 flex items-center justify-center space-x-4 transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl cursor-pointer">
+                <div>
+                    <h3 class="text-xl font-bold text-white mb-1 font-heading text-center text-shadow">Telegram-канал EGREGOR</h3>
+                    <p class="text-gray-200 text-sm text-center text-shadow">В&nbsp;нем еще больше про маркетинг и&nbsp;заработок</p>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <!-- Modal window for success messages -->
+    <div id="success-modal" class="fixed inset-0 bg-gray-900 bg-opacity-70 hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-neutral-800 rounded-xl p-8 shadow-2xl text-center max-w-sm w-full transform transition-all duration-300 scale-95 opacity-0 border border-gray-700" id="modal-content">
+            <div class="flex items-center justify-center mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            </div>
+            <h2 id="modal-title" class="text-2xl font-bold text-gray-100 mb-2"></h2>
+            <p id="modal-text" class="text-gray-300 mb-6"></p>
+            <button id="modal-close-button" class="bg-indigo-600 text-white font-semibold py-2 px-6 rounded-full hover:bg-indigo-700 transition-colors">Закрыть</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            Telegram.WebApp.ready();
+            
+            const lessons = [
+                {
+                    title: "УРОК #1 — «Быстрый старт в&nbsp;маркетинге»",
+                    content: ["Что такое маркетинг. Где здесь деньги?", "Кто такой маркетолог и&nbsp;почему в&nbsp;2025 году все маркетологи будут с&nbsp;деньгами?", "Реальные примеры того, как с&nbsp;нуля можно выйти на&nbsp;150.000+ рублей", "Кто я&nbsp;такой и&nbsp;мои проекты, где я&nbsp;работаю маркетологом"],
+                    videoIframe: `<div class="video-container"><iframe src="https://vkvideo.ru/video_ext.php?oid=-225480090&id=456239022&hd=2&autoplay=1" title="УРОК #1 — «Быстрый старт в маркетинге»" allow="autoplay; encrypted-media; fullscreen; picture-in-picture; screen-wake-lock;" frameborder="0" allowfullscreen></iframe></div>`,
+                },
+                {
+                    title: "УРОК #2 — «Где точно платят сотни тысяч в&nbsp;маркетинге?»",
+                    content: ["Ты&nbsp;узнаешь про 4&nbsp;лучших направления в&nbsp;маркетинге и&nbsp;сдашь домашку с&nbsp;проверкой"],
+                    homework: [
+                        { bold: "Выбрать одно из&nbsp;направлений:", regular: "одна услуга, связка услуг, продюсирование, комплексный маркетинг" },
+                        { bold: "Кратко описать,", regular: "как ты&nbsp;его понял и&nbsp;что будешь предлагать клиентам" },
+                        { bold: "Описать,", regular: "почему ты&nbsp;выбрал именно его, что в&nbsp;нем понравилось" },
+                        { bold: "Написать свои вопросы", regular: "в&nbsp;развернутом формате" }
+                    ],
+                    videoIframe: `<div class="video-container"><iframe src="https://vkvideo.ru/video_ext.php?oid=-225480090&id=456239023&hd=2&autoplay=1" title="УРОК #2 — «Где точно платят сотни тысяч в маркетинге?»" allow="autoplay; encrypted-media; fullscreen; picture-in-picture; screen-wake-lock;" frameborder="0" allowfullscreen></iframe></div>`,
+                },
+                {
+                    title: "УРОК #3 — Вот твой ПЛАН действий для выхода на&nbsp;150.000 рублей на&nbsp;маркетинге",
+                    content: ["Разложил по&nbsp;шагам все, что делал&nbsp;Я, когда только начинал свой путь, чтобы&nbsp;уже через год зарабатывать 400.000&nbsp;рублей, а&nbsp;еще через полгода 1&nbsp;млн рублей на&nbsp;своих услугах. Тебе лишь останется применить это у&nbsp;себя."],
+                    videoIframe: `<div class="video-container"><iframe src="https://vkvideo.ru/video_ext.php?oid=-225480090&id=456239024&hd=2&autoplay=1" title="УРОК #3 — ПЛАН действий для выхода на 150.000 рублей" allow="autoplay; encrypted-media; fullscreen; picture-in-picture; screen-wake-lock;" frameborder="0" allowfullscreen></iframe></div>`,
+                }
+            ];
+            const progressKey = 'egregorSchoolLessonIndex';
+
+            const lessonTitleElement = document.getElementById('lesson-title');
+            const lessonContentContainer = document.getElementById('lesson-content-container');
+            const lessonVideoContainer = document.getElementById('lesson-video-container');
+            const homeworkBlock = document.getElementById('homework-block');
+            const homeworkList = document.getElementById('homework-list');
+            const navButtonsContainerMain = document.getElementById('nav-buttons-container-main');
+            const navButtonsContainerSecondary = document.getElementById('nav-buttons-container-secondary');
+            const progressBar = document.getElementById('progress-bar');
+            const successModal = document.getElementById('success-modal');
+            const modalContent = document.getElementById('modal-content');
+            const modalTitle = document.getElementById('modal-title');
+            const modalText = document.getElementById('modal-text');
+            const lesson3ExtraContent = document.getElementById('lesson-3-extra-content');
+
+            let currentLessonIndex = parseInt(localStorage.getItem(progressKey)) || 0;
+
+            const showModal = (title, message) => {
+                modalTitle.innerHTML = title;
+                modalText.innerHTML = message;
+                successModal.classList.remove('hidden');
+                setTimeout(() => {
+                    modalContent.classList.add('scale-100', 'opacity-100');
+                    modalContent.classList.remove('scale-95', 'opacity-0');
+                }, 50);
+            };
+
+            const hideModal = () => {
+                modalContent.classList.remove('scale-100', 'opacity-100');
+                modalContent.classList.add('scale-95', 'opacity-0');
+                setTimeout(() => successModal.classList.add('hidden'), 300);
+            };
+
+            const renderLesson = (index) => {
+                if (index < 0 || index >= lessons.length) return;
+                
+                const lesson = lessons[index];
+                lessonTitleElement.innerHTML = lesson.title;
+                lessonVideoContainer.innerHTML = lesson.videoIframe;
+
+                if (index === 2) {
+                    lessonContentContainer.innerHTML = `<blockquote class="bg-neutral-700/50 border-l-4 border-l-[#5FEAFF] text-gray-300 italic p-4 rounded-r-lg"><p>${lesson.content[0]}</p></blockquote>`;
+                } else {
+                    const listHtml = lesson.content.map(item => `<li>${item}</li>`).join('');
+                    lessonContentContainer.innerHTML = `<div class="border-t border-b border-gray-700 py-4 mt-4"><ul class="styled-list space-y-4">${listHtml}</ul></div>`;
+                }
+                
+                if (index === 1 && lesson.homework) {
+                    homeworkList.innerHTML = lesson.homework.map(item => `<li><span class="text-gray-200 font-semibold">${item.bold}</span> ${item.regular}</li>`).join('');
+                    homeworkBlock.classList.remove('hidden');
+                } else {
+                    homeworkBlock.classList.add('hidden');
+                }
+
+                lesson3ExtraContent.classList.toggle('hidden', index !== 2);
+
+                const progress = ((index + 1) / lessons.length) * 100;
+                progressBar.classList.remove('progress-bar-animated');
+                void progressBar.offsetWidth;
+                progressBar.style.width = `${progress}%`;
+                progressBar.classList.add('progress-bar-animated');
+
+                navButtonsContainerMain.innerHTML = '';
+                navButtonsContainerSecondary.innerHTML = '';
+                navButtonsContainerMain.classList.add('hidden');
+                navButtonsContainerSecondary.classList.add('hidden');
+                
+                if (index === 1) {
+                    renderNavigation(index, navButtonsContainerSecondary);
+                    navButtonsContainerSecondary.classList.remove('hidden');
+                } else {
+                    renderNavigation(index, navButtonsContainerMain);
+                    navButtonsContainerMain.classList.remove('hidden');
+                }
+
+                window.scrollTo(0, 0);
+            };
+
+            const renderNavigation = (index, container) => {
+                let buttonsHtml = '';
+                if (index > 0) {
+                    buttonsHtml += `<button id="prev-lesson-button" aria-label="Предыдущий урок" class="bg-gray-700 text-white font-semibold w-12 h-12 rounded-full shadow-lg transition-all duration-300 hover:scale-105 flex items-center justify-center text-shadow flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg></button>`;
+                }
+                
+                if (index === 2) {
+                    buttonsHtml += `<a href="https://www.gregedu.ru/forma?utm_source=tg&utm_medium=bot&utm_campaign=voronka_3_uroka" target="_blank" class="w-full bg-gradient-to-br from-[#5FEAFF] to-[#4C87FF] text-white font-semibold py-3 px-6 rounded-full shadow-xl transition-all duration-300 hover:scale-105 flex items-center justify-center text-shadow flex-grow"><span class="text-center">Попасть на&nbsp;разборы</span><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg></a>`;
+                } else if (index < lessons.length - 1) {
+                    buttonsHtml += `<button id="next-lesson-button" class="bg-gradient-to-br from-[#5FEAFF] to-[#4C87FF] text-white font-semibold py-3 px-8 rounded-full shadow-xl transition-all duration-300 hover:scale-105 flex items-center text-shadow flex-grow justify-center"><span>Следующий урок</span><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg></button>`;
+                }
+                container.innerHTML = buttonsHtml;
+            };
+
+            document.body.addEventListener('click', (e) => {
+                const button = e.target.closest('button');
+                if (!button) return;
+
+                switch (button.id) {
+                    case 'prev-lesson-button':
+                        if (currentLessonIndex > 0) {
+                            currentLessonIndex--;
+                            localStorage.setItem(progressKey, currentLessonIndex);
+                            renderLesson(currentLessonIndex);
+                        }
+                        break;
+                    case 'next-lesson-button':
+                        if (currentLessonIndex < lessons.length - 1) {
+                            currentLessonIndex++;
+                            localStorage.setItem(progressKey, currentLessonIndex);
+                            renderLesson(currentLessonIndex);
+                        }
+                        break;
+                    case 'modal-close-button':
+                        hideModal();
+                        break;
+                }
+            });
+            
+            renderLesson(currentLessonIndex);
+        });
+    </script>
+</body>
+</html>
