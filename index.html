@@ -69,6 +69,19 @@
         .text-shadow {
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
         }
+
+        /* Lead Form Styles */
+        .form-step {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        .form-step.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
     <!-- Telegram Web Apps API -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -125,10 +138,10 @@
                     </ul>
                 </div>
                 <div class="pt-4">
-                     <a href="https://www.gregedu.ru/forma?utm_source=tg&utm_medium=bot&utm_campaign=voronka_3_uroka" target="_blank" class="analytics-cta w-full bg-gradient-to-br from-[#5FEAFF] to-[#4C87FF] text-white font-semibold py-4 px-6 rounded-full shadow-xl transition-all duration-300 hover:scale-105 flex items-center justify-center text-shadow text-lg">
+                     <button class="analytics-cta w-full bg-gradient-to-br from-[#5FEAFF] to-[#4C87FF] text-white font-semibold py-4 px-6 rounded-full shadow-xl transition-all duration-300 hover:scale-105 flex items-center justify-center text-shadow text-lg">
                         <span>Попасть на&nbsp;разборы</span>
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
-                    </a>
+                    </button>
                 </div>
             </div>
 
@@ -142,7 +155,6 @@
                 <div class="flex-shrink-0">
                     <img src="png-klev-club-fqtr-p-samoletik-telegramma-png-5.png" alt="Telegram" class="w-12 h-12">
                 </div>
-                <!-- FIXED: Changed text-right to text-left -->
                 <div class="text-left">
                     <h3 class="text-xl font-bold text-white mb-1 font-heading text-shadow">Telegram-канал EGREGOR</h3>
                     <p class="text-gray-200 text-sm text-shadow">В&nbsp;нем еще больше про маркетинг и&nbsp;заработок</p>
@@ -151,12 +163,36 @@
         </a>
     </div>
 
+    <!-- Lead Form Modal -->
+    <div id="lead-form-modal" class="fixed inset-0 bg-black bg-opacity-80 hidden flex items-center justify-center p-4 z-50">
+        <div id="lead-form-content" class="bg-neutral-900 rounded-3xl shadow-2xl border border-gray-800 w-full max-w-md transform transition-all duration-300 scale-95 opacity-0">
+            <div class="p-6 relative">
+                <button id="close-form-button" class="absolute top-4 right-4 text-gray-500 hover:text-white transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+                <div id="lead-form-progress" class="w-full h-2 rounded-full bg-gray-700 mb-6">
+                    <div id="lead-form-progress-bar" class="h-2 rounded-full bg-gradient-to-r from-[#5FEAFF] to-[#4C87FF] transition-all duration-300" style="width: 0%;"></div>
+                </div>
+
+                <form id="lead-form">
+                    <!-- Steps will be injected here by JS -->
+                </form>
+
+                <div id="form-thank-you" class="hidden text-center py-12">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-green-400 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    <h3 class="text-2xl font-bold text-white mb-2">Спасибо!</h3>
+                    <p class="text-gray-400">Ваша заявка отправлена. Мы&nbsp;скоро с&nbsp;вами свяжемся.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             Telegram.WebApp.ready();
 
             // --- ANALYTICS SETUP ---
-            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyBg4SsfvWYkTs8PuKTjHPqXTZYnThUMniixQ_8XsMmfzcfpjinTWs2LzBAwKT7oL8R0w/exec";
+            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzOGFGcoGl2eqlP9PXsd6LfR6TW_Fe_wXYxzSJ7Hj2w0jTuJ4d5bKrIyjaadrOVLeja/exec";
             let tgUserId = 'unknown_user';
             try {
                 tgUserId = Telegram.WebApp.initDataUnsafe.user.id || 'test_user_' + Math.random().toString(36).substr(2, 9);
@@ -164,37 +200,23 @@
                 console.warn("Could not get Telegram User ID.", e);
             }
 
-            const trackEvent = (eventName) => {
-                const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
-                const eventKey = `event_${today}_${tgUserId}_${eventName}`;
-
-                if (localStorage.getItem(eventKey)) {
-                    console.log(`Event "${eventName}" already tracked today for this user.`);
-                    return;
+            const trackData = (payload) => {
+                const formData = new FormData();
+                formData.append('userId', tgUserId);
+                
+                for (const key in payload) {
+                    formData.append(key, payload[key]);
                 }
-
-                const data = {
-                    date: today,
-                    userId: tgUserId,
-                    event: eventName
-                };
 
                 fetch(SCRIPT_URL, {
                     method: 'POST',
-                    mode: 'no-cors', 
-                    cache: 'no-cache',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data)
+                    body: formData,
                 })
-                .then(() => {
-                    console.log(`Event "${eventName}" successfully tracked.`);
-                    localStorage.setItem(eventKey, 'true');
+                .then(response => response.text())
+                .then(result => {
+                    console.log('Success:', result);
                 })
-                .catch(error => {
-                    console.error('Error tracking event:', error);
-                });
+                .catch(error => console.error('Error tracking data:', error));
             };
             
             const lessons = [
@@ -245,17 +267,9 @@
             questionPlaceholder.innerHTML = questionBlockHTML;
 
             let currentLessonIndex = parseInt(localStorage.getItem(progressKey)) || 0;
-            let videoWatchTimer;
 
             const renderLesson = (index) => {
                 if (index < 0 || index >= lessons.length) return;
-
-                trackEvent(`opened_lesson_${index + 1}`);
-
-                clearTimeout(videoWatchTimer);
-                videoWatchTimer = setTimeout(() => {
-                    trackEvent(`watched_lesson_${index + 1}_10min`);
-                }, 600000); 
                 
                 const lesson = lessons[index];
                 lessonTitleElement.innerHTML = lesson.title;
@@ -308,7 +322,7 @@
                 }
                 
                 if (index === 2) {
-                    buttonsHtml += `<a href="https://www.gregedu.ru/forma?utm_source=tg&utm_medium=bot&utm_campaign=voronka_3_uroka" target="_blank" class="analytics-cta w-full bg-gradient-to-br from-[#5FEAFF] to-[#4C87FF] text-white font-semibold py-3 px-6 rounded-full shadow-xl transition-all duration-300 hover:scale-105 flex items-center justify-center text-shadow flex-grow"><span class="text-center">Попасть на&nbsp;разборы</span><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg></a>`;
+                    buttonsHtml += `<button class="analytics-cta w-full bg-gradient-to-br from-[#5FEAFF] to-[#4C87FF] text-white font-semibold py-3 px-6 rounded-full shadow-xl transition-all duration-300 hover:scale-105 flex items-center justify-center text-shadow flex-grow"><span class="text-center">Попасть на&nbsp;разборы</span><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg></button>`;
                 } else if (index < lessons.length - 1) {
                     buttonsHtml += `<button id="next-lesson-button" class="bg-gradient-to-br from-[#5FEAFF] to-[#4C87FF] text-white font-semibold py-3 px-8 rounded-full shadow-xl transition-all duration-300 hover:scale-105 flex items-center text-shadow flex-grow justify-center"><span>Следующий урок</span><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg></button>`;
                 }
@@ -317,14 +331,11 @@
 
             document.body.addEventListener('click', (e) => {
                 const button = e.target.closest('button');
-                const ctaLink = e.target.closest('.analytics-cta');
-
-                if (ctaLink) {
-                    trackEvent('clicked_cta');
+                if (button && button.classList.contains('analytics-cta')) {
+                    trackData({ event: 'clicked_cta' });
+                    openLeadForm();
                 }
-                
                 if (!button) return;
-
                 switch (button.id) {
                     case 'prev-lesson-button':
                         if (currentLessonIndex > 0) {
@@ -343,6 +354,147 @@
                 }
             });
             
+            // --- LEAD FORM LOGIC ---
+            const leadFormModal = document.getElementById('lead-form-modal');
+            const leadFormContent = document.getElementById('lead-form-content');
+            const closeFormButton = document.getElementById('close-form-button');
+            const leadForm = document.getElementById('lead-form');
+            const thankYouScreen = document.getElementById('form-thank-you');
+            const progressBarForm = document.getElementById('lead-form-progress-bar');
+            let currentStep = 0;
+
+            const formSteps = [
+                { question: "Как тебя зовут?", type: "text", name: "name", required: true },
+                { question: "Сколько тебе лет?", type: "number", name: "age", required: true },
+                { question: "Чем ты занимаешься сейчас?", type: "radio", name: "occupation", options: ["Фрилансер", "Работаю в найме", "Действующий маркетолог", "Не работаю", "Другая сфера"], required: true },
+                { question: "Твой уровень дохода сейчас", type: "text", name: "income", required: true },
+                { question: "Сколько хочешь зарабатывать через 8 недель?", type: "text", name: "goal_income", required: true },
+                { question: "Почему самостоятельно не получается дойти до желаемого дохода? Распиши ключевые причины", type: "textarea", name: "reason", required: true },
+                { question: "Какой твой основной запрос сейчас? Что тебе важно решить на разборе?", type: "textarea", name: "request", required: true },
+            ];
+
+            const openLeadForm = () => {
+                leadFormModal.classList.remove('hidden');
+                setTimeout(() => {
+                    leadFormContent.classList.add('scale-100', 'opacity-100');
+                    leadFormContent.classList.remove('scale-95', 'opacity-0');
+                }, 50);
+                renderFormStep(0);
+            };
+
+            const closeLeadForm = () => {
+                leadFormContent.classList.remove('scale-100', 'opacity-100');
+                leadFormContent.classList.add('scale-95', 'opacity-0');
+                setTimeout(() => {
+                    leadFormModal.classList.add('hidden');
+                    leadForm.classList.remove('hidden');
+                    thankYouScreen.classList.add('hidden');
+                }, 300);
+            };
+            
+            closeFormButton.addEventListener('click', closeLeadForm);
+
+            const renderFormStep = (stepIndex) => {
+                currentStep = stepIndex;
+                const step = formSteps[stepIndex];
+                let html = `<div class="form-step active">
+                    <label class="block text-white text-xl font-semibold mb-6 text-center">${step.question}</label>`;
+
+                if (step.type === 'text' || step.type === 'number') {
+                    html += `<input type="${step.type}" name="${step.name}" class="w-full bg-neutral-800 border border-gray-700 rounded-lg p-3 text-white focus:ring-2 focus:ring-sky-500 focus:outline-none" ${step.required ? 'required' : ''}>`;
+                } else if (step.type === 'textarea') {
+                    html += `<textarea name="${step.name}" rows="4" class="w-full bg-neutral-800 border border-gray-700 rounded-lg p-3 text-white focus:ring-2 focus:ring-sky-500 focus:outline-none" ${step.required ? 'required' : ''}></textarea>`;
+                } else if (step.type === 'radio') {
+                    html += `<div class="space-y-3 text-left">`;
+                    step.options.forEach(opt => {
+                        html += `<label class="flex items-center p-3 bg-neutral-800 rounded-lg cursor-pointer hover:bg-neutral-700 transition-colors"><input type="radio" name="${step.name}" value="${opt}" class="mr-3" ${step.required ? 'required' : ''}><span>${opt}</span></label>`;
+                    });
+                    html += `<input type="text" name="occupation_other" placeholder="Напишите свой вариант" class="w-full bg-neutral-800 border border-gray-700 rounded-lg p-3 text-white focus:ring-2 focus:ring-sky-500 focus:outline-none mt-3 hidden">`;
+                    html += `</div>`;
+                }
+
+                html += `<div class="flex justify-between mt-8">`;
+                if (stepIndex > 0) {
+                    html += `<button type="button" id="form-back-btn" class="bg-gray-700 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition-colors duration-300 hover:bg-gray-600">Назад</button>`;
+                } else {
+                    html += `<div></div>`; // Placeholder
+                }
+                if (stepIndex < formSteps.length - 1) {
+                    html += `<button type="button" id="form-next-btn" class="bg-gradient-to-br from-[#5FEAFF] to-[#4C87FF] text-white font-semibold py-3 px-8 rounded-full shadow-xl transition-all duration-300 hover:scale-105">Далее</button>`;
+                } else {
+                    html += `<button type="submit" class="bg-gradient-to-br from-[#5FEAFF] to-[#4C87FF] text-white font-semibold py-3 px-8 rounded-full shadow-xl transition-all duration-300 hover:scale-105">Отправить</button>`;
+                }
+                html += `</div></div>`;
+                leadForm.innerHTML = html;
+                progressBarForm.style.width = `${((stepIndex + 1) / formSteps.length) * 100}%`;
+
+                // Add event listeners for new buttons
+                document.getElementById('form-next-btn')?.addEventListener('click', nextStep);
+                document.getElementById('form-back-btn')?.addEventListener('click', prevStep);
+                document.querySelectorAll('input[name="occupation"]').forEach(radio => {
+                    radio.addEventListener('change', (e) => {
+                        const otherInput = document.querySelector('input[name="occupation_other"]');
+                        otherInput.classList.toggle('hidden', e.target.value !== 'Другая сфера');
+                    });
+                });
+            };
+            
+            const nextStep = () => {
+                const currentInputs = leadForm.querySelectorAll(`[name="${formSteps[currentStep].name}"]`);
+                let isValid = true;
+                currentInputs.forEach(input => {
+                    if (input.required && !input.value && input.type !== 'radio') isValid = false;
+                    if (input.type === 'radio' && input.required) {
+                        if (!document.querySelector(`input[name="${formSteps[currentStep].name}"]:checked`)) {
+                            isValid = false;
+                        }
+                    }
+                });
+
+                if (isValid && currentStep < formSteps.length - 1) {
+                    renderFormStep(currentStep + 1);
+                } else if (!isValid) {
+                    // Optionally show an error message
+                }
+            };
+            
+            const prevStep = () => {
+                if (currentStep > 0) {
+                    renderFormStep(currentStep - 1);
+                }
+            };
+
+            leadForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const formData = new FormData(leadForm);
+                const data = {};
+                for (let [key, value] of formData.entries()) {
+                    if (key === 'occupation' && value === 'Другая сфера') {
+                        data[key] = formData.get('occupation_other') || 'Другая сфера';
+                    } else {
+                        data[key] = value;
+                    }
+                }
+                delete data.occupation_other;
+
+                trackData({ form_submission: true, ...data });
+                
+                leadForm.classList.add('hidden');
+                thankYouScreen.classList.remove('hidden');
+                setTimeout(closeLeadForm, 3000);
+            });
+
+            leadForm.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (currentStep < formSteps.length - 1) {
+                        nextStep();
+                    } else {
+                        leadForm.dispatchEvent(new Event('submit', { cancelable: true }));
+                    }
+                }
+            });
+
             renderLesson(currentLessonIndex);
         });
     </script>
