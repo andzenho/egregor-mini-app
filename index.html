@@ -6,6 +6,11 @@
     <title>EGREGOR SCHOOL</title>
     <!-- Tailwind CSS for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- NEW: imask.js for phone number masking -->
+    <script src="https://unpkg.com/imask"></script>
+    <!-- NEW: intl-tel-input for country code selection -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
     <style>
         /* Importing fonts: Montserrat for headings and Open Sans for text */
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Open+Sans:wght@400;600&display=swap');
@@ -82,6 +87,12 @@
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        /* Styles for intl-tel-input */
+        .iti { width: 100%; }
+        .iti__country-list { background-color: #2d2d2d; border-color: #444; }
+        .iti__country { color: #e5e7eb; }
+        .iti__country:hover { background-color: #444; }
+        .iti__dial-code { color: #888; }
     </style>
     <!-- Telegram Web Apps API -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -103,7 +114,7 @@
 
             <div id="lesson-content-container" class="text-gray-300 text-base leading-relaxed mt-8"></div>
 
-            <div id="nav-buttons-container-main" class="flex justify-center mt-8 space-x-4"></div>
+            <div id="nav-buttons-container-main" class="mt-8"></div>
             
             <div id="homework-block" class="mt-8 p-6 bg-neutral-900/50 rounded-2xl border border-gray-700 space-y-4 hidden">
                 <h3 class="text-xl font-bold text-gray-100 font-heading text-center">Твое Домашнее Задание</h3>
@@ -142,10 +153,13 @@
                         <span>Попасть на&nbsp;разборы</span>
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
                     </button>
+                    <p class="text-center text-xs text-gray-500 mt-4">
+                        Нажимая на&nbsp;кнопку «Попасть на разборы» вы&nbsp;соглашаетесь с&nbsp;<a href="https://www.gregedu.ru/polkon" target="_blank" class="underline hover:text-gray-300 transition-colors">Политикой конфиденциальности</a>&nbsp;и&nbsp;даёте&nbsp;<a href="https://www.gregedu.ru/soglasie" target="_blank" class="underline hover:text-gray-300 transition-colors">согласие на&nbsp;обработку персональных данных</a>.
+                    </p>
                 </div>
             </div>
 
-            <div id="nav-buttons-container-secondary" class="flex justify-center mt-8 space-x-4"></div>
+            <div id="nav-buttons-container-secondary" class="mt-8"></div>
         </div>
 
         <div id="question-placeholder" class="mb-6"></div>
@@ -191,32 +205,49 @@
         document.addEventListener('DOMContentLoaded', () => {
             Telegram.WebApp.ready();
 
-            // --- ANALYTICS SETUP ---
-            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzOGFGcoGl2eqlP9PXsd6LfR6TW_Fe_wXYxzSJ7Hj2w0jTuJ4d5bKrIyjaadrOVLeja/exec";
+            const SHEETY_URL = "https://api.sheety.co/b61f74d84dc46b147f3a02c9828b143f/egregor/leads";
+            const SHEETY_AUTH = "Basic ZWdyZWdvcjplZ3JlZ29yXzI=";
+
             let tgUserId = 'unknown_user';
             try {
-                tgUserId = Telegram.WebApp.initDataUnsafe.user.id || 'test_user_' + Math.random().toString(36).substr(2, 9);
+                tgUserId = Telegram.WebApp?.initDataUnsafe?.user?.id || ('test_user_' + Math.random().toString(36).slice(2));
             } catch (e) {
                 console.warn("Could not get Telegram User ID.", e);
             }
 
-            const trackData = (payload) => {
-                const formData = new FormData();
-                formData.append('userId', tgUserId);
-                
-                for (const key in payload) {
-                    formData.append(key, payload[key]);
-                }
+            const submitFormData = (formDataObject) => {
+                const now = new Date();
+                const payload = {
+                    name: formDataObject.name || "",
+                    age: formDataObject.age || "",
+                    occupation: formDataObject.occupation || "",
+                    income: formDataObject.income || "",
+                    goalIncome: formDataObject.goal_income || "",
+                    reason: formDataObject.reason || "",
+                    request: formDataObject.request || "",
+                    phone: formDataObject.phone || "",
+                    contact: formDataObject.contact || "",
+                    userid: tgUserId || "unknown_user",
+                    timestamp: now.toISOString()
+                };
 
-                fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    body: formData,
+                console.log("Sending to Sheety:", payload);
+
+                fetch(SHEETY_URL, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": SHEETY_AUTH
+                    },
+                    body: JSON.stringify({ lead: payload })
                 })
-                .then(response => response.text())
-                .then(result => {
-                    console.log('Success:', result);
+                .then(async (r) => {
+                    const text = await r.text();
+                    console.log("Sheety response status:", r.status, r.statusText);
+                    console.log("Sheety raw response:", text);
+                    try { console.log("Sheety parsed JSON:", JSON.parse(text)); } catch {}
                 })
-                .catch(error => console.error('Error tracking data:', error));
+                .catch(err => console.error("Error sending to Sheety:", err));
             };
             
             const lessons = [
@@ -278,12 +309,12 @@
                 if (index === 2) {
                     lessonContentContainer.innerHTML = `<blockquote class="bg-neutral-700/50 border-l-4 border-l-[#5FEAFF] text-gray-300 italic p-4 rounded-r-lg"><p>${lesson.content[0]}</p></blockquote>`;
                 } else {
-                    const listHtml = lesson.content.map(item => `<li>${item}</li>`).join('');
+                    const listHtml = (lesson.content || []).map(item => `<li>${item}</li>`).join('');
                     lessonContentContainer.innerHTML = `<div class="border-t border-b border-gray-700 py-4 mt-4"><ul class="styled-list space-y-4">${listHtml}</ul></div>`;
                 }
                 
                 if (index === 1 && lesson.homework) {
-                    homeworkList.innerHTML = lesson.homework.map(item => `<li><span class="text-gray-200 font-semibold">${item.bold}</span> ${item.regular}</li>`).join('');
+                    homeworkList.innerHTML = lesson.homework.map(it => `<li><span class="text-gray-200 font-semibold">${it.bold}</span> ${it.regular}</li>`).join('');
                     homeworkBlock.classList.remove('hidden');
                 } else {
                     homeworkBlock.classList.add('hidden');
@@ -291,9 +322,8 @@
 
                 lesson3ExtraContent.classList.toggle('hidden', index !== 2);
 
-                const totalSteps = lessons.length + 1; 
+                const totalSteps = lessons.length + 1;
                 const progress = ((index + 1) / totalSteps) * 100;
-
                 progressBar.classList.remove('progress-bar-animated');
                 void progressBar.offsetWidth;
                 progressBar.style.width = `${progress}%`;
@@ -303,7 +333,7 @@
                 navButtonsContainerSecondary.innerHTML = '';
                 navButtonsContainerMain.classList.add('hidden');
                 navButtonsContainerSecondary.classList.add('hidden');
-                
+
                 if (index === 1) {
                     renderNavigation(index, navButtonsContainerSecondary);
                     navButtonsContainerSecondary.classList.remove('hidden');
@@ -318,81 +348,134 @@
             const renderNavigation = (index, container) => {
                 let buttonsHtml = '';
                 if (index > 0) {
-                    buttonsHtml += `<button id="prev-lesson-button" aria-label="Предыдущий урок" class="bg-gray-700 text-white font-semibold w-12 h-12 rounded-full shadow-lg transition-all duration-300 hover:scale-105 flex items-center justify-center text-shadow flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg></button>`;
+                    buttonsHtml += `
+                        <button id="prev-lesson-button" aria-label="Предыдущий урок"
+                            class="bg-gray-700 text-white font-semibold w-12 h-12 rounded-full shadow-lg transition-all duration-300 hover:scale-105 flex items-center justify-center text-shadow flex-shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+                            </svg>
+                        </button>`;
+                }
+
+                if (index === 2) {
+                    buttonsHtml += `
+                        <div class="flex-grow">
+                            <button class="analytics-cta w-full bg-gradient-to-br from-[#5FEAFF] to-[#4C87FF] text-white font-semibold py-3 px-6 rounded-full shadow-xl transition-all duration-300 hover:scale-105 flex items-center justify-center text-shadow">
+                                <span class="text-center">Попасть на&nbsp;разборы</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </button>
+                        </div>`;
+                } else if (index < lessons.length - 1) {
+                    buttonsHtml += `
+                        <button id="next-lesson-button"
+                            class="bg-gradient-to-br from-[#5FEAFF] to-[#4C87FF] text-white font-semibold py-3 px-8 rounded-full shadow-xl transition-all duration-300 hover:scale-105 flex items-center text-shadow flex-grow justify-center">
+                            <span>Следующий урок</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                            </svg>
+                        </button>`;
+                }
+
+                let finalHtml = `<div class="flex w-full items-center space-x-4">${buttonsHtml}</div>`;
+
+                if (index === 2) {
+                    finalHtml += `
+                        <p class="text-center text-xs text-gray-500 mt-4">
+                            Нажимая на&nbsp;кнопку «Попасть на разборы» вы&nbsp;соглашаетесь с&nbsp;<a href="https://www.gregedu.ru/polkon" target="_blank" class="underline hover:text-gray-300 transition-colors">Политикой конфиденциальности</a>&nbsp;и&nbsp;даёте&nbsp;<a href="https://www.gregedu.ru/soglasie" target="_blank" class="underline hover:text-gray-300 transition-colors">согласие на&nbsp;обработку персональных данных</a>.
+                        </p>`;
                 }
                 
-                if (index === 2) {
-                    buttonsHtml += `<button class="analytics-cta w-full bg-gradient-to-br from-[#5FEAFF] to-[#4C87FF] text-white font-semibold py-3 px-6 rounded-full shadow-xl transition-all duration-300 hover:scale-105 flex items-center justify-center text-shadow flex-grow"><span class="text-center">Попасть на&nbsp;разборы</span><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg></button>`;
-                } else if (index < lessons.length - 1) {
-                    buttonsHtml += `<button id="next-lesson-button" class="bg-gradient-to-br from-[#5FEAFF] to-[#4C87FF] text-white font-semibold py-3 px-8 rounded-full shadow-xl transition-all duration-300 hover:scale-105 flex items-center text-shadow flex-grow justify-center"><span>Следующий урок</span><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg></button>`;
-                }
-                container.innerHTML = buttonsHtml;
+                container.innerHTML = finalHtml;
+
+                container.querySelector('#prev-lesson-button')?.addEventListener('click', () => {
+                    if (currentLessonIndex > 0) {
+                        currentLessonIndex--;
+                        localStorage.setItem(progressKey, currentLessonIndex);
+                        renderLesson(currentLessonIndex);
+                    }
+                });
+
+                container.querySelector('#next-lesson-button')?.addEventListener('click', () => {
+                    if (currentLessonIndex < lessons.length - 1) {
+                        currentLessonIndex++;
+                        localStorage.setItem(progressKey, currentLessonIndex);
+                        renderLesson(currentLessonIndex);
+                    }
+                });
+
+                container.querySelector('.analytics-cta')?.addEventListener('click', openLeadForm);
             };
 
-            document.body.addEventListener('click', (e) => {
-                const button = e.target.closest('button');
-                if (button && button.classList.contains('analytics-cta')) {
-                    trackData({ event: 'clicked_cta' });
-                    openLeadForm();
-                }
-                if (!button) return;
-                switch (button.id) {
-                    case 'prev-lesson-button':
-                        if (currentLessonIndex > 0) {
-                            currentLessonIndex--;
-                            localStorage.setItem(progressKey, currentLessonIndex);
-                            renderLesson(currentLessonIndex);
-                        }
-                        break;
-                    case 'next-lesson-button':
-                        if (currentLessonIndex < lessons.length - 1) {
-                            currentLessonIndex++;
-                            localStorage.setItem(progressKey, currentLessonIndex);
-                            renderLesson(currentLessonIndex);
-                        }
-                        break;
-                }
-            });
-            
-            // --- LEAD FORM LOGIC ---
-            const leadFormModal = document.getElementById('lead-form-modal');
+            // --- Логика формы ---
+            const leadFormModal    = document.getElementById('lead-form-modal');
             const leadFormContent = document.getElementById('lead-form-content');
             const closeFormButton = document.getElementById('close-form-button');
-            const leadForm = document.getElementById('lead-form');
-            const thankYouScreen = document.getElementById('form-thank-you');
+            const leadForm         = document.getElementById('lead-form');
+            const thankYouScreen  = document.getElementById('form-thank-you');
             const progressBarForm = document.getElementById('lead-form-progress-bar');
+
             let currentStep = 0;
+            let answers = {};
+            let phoneInputInstance;
 
             const formSteps = [
                 { question: "Как тебя зовут?", type: "text", name: "name", required: true },
                 { question: "Сколько тебе лет?", type: "number", name: "age", required: true },
-                { question: "Чем ты занимаешься сейчас?", type: "radio", name: "occupation", options: ["Фрилансер", "Работаю в найме", "Действующий маркетолог", "Не работаю", "Другая сфера"], required: true },
+                { question: "Чем ты занимаешься сейчас?", type: "radio", name: "occupation",
+                    options: ["Фрилансер","Работаю в найме","Действующий маркетолог","Не работаю","Другая сфера"], required: true },
                 { question: "Твой уровень дохода сейчас", type: "text", name: "income", required: true },
                 { question: "Сколько хочешь зарабатывать через 8 недель?", type: "text", name: "goal_income", required: true },
-                { question: "Почему самостоятельно не получается дойти до желаемого дохода? Распиши ключевые причины", type: "textarea", name: "reason", required: true },
-                { question: "Какой твой основной запрос сейчас? Что тебе важно решить на разборе?", type: "textarea", name: "request", required: true },
+                { question: "Почему самостоятельно не получается дойти до желаемого дохода?", type: "textarea", name: "reason", required: true },
+                { question: "Какой твой основной запрос сейчас?", type: "textarea", name: "request", required: true },
+                { question: "Твой номер телефона для связи", type: "tel", name: "phone", required: true },
+                { question: "Оставь свой Telegram или номер, к которому привязан WhatsApp", type: "text", name: "contact", required: true },
             ];
 
             const openLeadForm = () => {
+                answers = {};
                 leadFormModal.classList.remove('hidden');
                 setTimeout(() => {
-                    leadFormContent.classList.add('scale-100', 'opacity-100');
-                    leadFormContent.classList.remove('scale-95', 'opacity-0');
+                    leadFormContent.classList.add('scale-100','opacity-100');
+                    leadFormContent.classList.remove('scale-95','opacity-0');
                 }, 50);
                 renderFormStep(0);
             };
 
             const closeLeadForm = () => {
-                leadFormContent.classList.remove('scale-100', 'opacity-100');
-                leadFormContent.classList.add('scale-95', 'opacity-0');
+                leadFormContent.classList.remove('scale-100','opacity-100');
+                leadFormContent.classList.add('scale-95','opacity-0');
                 setTimeout(() => {
                     leadFormModal.classList.add('hidden');
                     leadForm.classList.remove('hidden');
                     thankYouScreen.classList.add('hidden');
                 }, 300);
             };
-            
+
             closeFormButton.addEventListener('click', closeLeadForm);
+
+            const saveStep = () => {
+                const step = formSteps[currentStep];
+                if (step.type === 'radio') {
+                    const checked = document.querySelector(`input[name="${step.name}"]:checked`);
+                    if (checked) answers[step.name] = checked.value;
+                    const other = document.querySelector('input[name="occupation_other"]');
+                    if (other && !other.classList.contains('hidden') && other.value.trim()) {
+                        answers['occupation_other'] = other.value.trim();
+                    } else {
+                        delete answers['occupation_other'];
+                    }
+                } else if (step.type === 'tel') {
+                    if (phoneInputInstance) {
+                        answers[step.name] = phoneInputInstance.getNumber();
+                    }
+                }
+                else {
+                    const el = document.querySelector(`[name="${step.name}"]`);
+                    if (el) answers[step.name] = el.value.trim();
+                }
+            };
 
             const renderFormStep = (stepIndex) => {
                 currentStep = stepIndex;
@@ -400,16 +483,27 @@
                 let html = `<div class="form-step active">
                     <label class="block text-white text-xl font-semibold mb-6 text-center">${step.question}</label>`;
 
-                if (step.type === 'text' || step.type === 'number') {
-                    html += `<input type="${step.type}" name="${step.name}" class="w-full bg-neutral-800 border border-gray-700 rounded-lg p-3 text-white focus:ring-2 focus:ring-sky-500 focus:outline-none" ${step.required ? 'required' : ''}>`;
+                if (step.type === 'text' || step.type === 'number' || step.type === 'tel') {
+                    html += `<input type="${step.type}" name="${step.name}" value="${answers[step.name] || ''}"
+                                class="w-full bg-neutral-800 border border-gray-700 rounded-lg p-3 text-white focus:ring-2 focus:ring-sky-500 focus:outline-none"
+                                ${step.required ? 'required' : ''}>`;
                 } else if (step.type === 'textarea') {
-                    html += `<textarea name="${step.name}" rows="4" class="w-full bg-neutral-800 border border-gray-700 rounded-lg p-3 text-white focus:ring-2 focus:ring-sky-500 focus:outline-none" ${step.required ? 'required' : ''}></textarea>`;
+                    html += `<textarea name="${step.name}" rows="4"
+                                class="w-full bg-neutral-800 border border-gray-700 rounded-lg p-3 text-white focus:ring-2 focus:ring-sky-500 focus:outline-none"
+                                ${step.required ? 'required' : ''}>${answers[step.name] || ''}</textarea>`;
                 } else if (step.type === 'radio') {
                     html += `<div class="space-y-3 text-left">`;
-                    step.options.forEach(opt => {
-                        html += `<label class="flex items-center p-3 bg-neutral-800 rounded-lg cursor-pointer hover:bg-neutral-700 transition-colors"><input type="radio" name="${step.name}" value="${opt}" class="mr-3" ${step.required ? 'required' : ''}><span>${opt}</span></label>`;
+                    (step.options || []).forEach(opt => {
+                        const checked = answers[step.name] === opt ? 'checked' : '';
+                        html += `<label class="flex items-center p-3 bg-neutral-800 rounded-lg cursor-pointer hover:bg-neutral-700 transition-colors">
+                                    <input type="radio" name="${step.name}" value="${opt}" class="mr-3" ${checked} ${step.required ? 'required' : ''}>
+                                    <span>${opt}</span>
+                                    </label>`;
                     });
-                    html += `<input type="text" name="occupation_other" placeholder="Напишите свой вариант" class="w-full bg-neutral-800 border border-gray-700 rounded-lg p-3 text-white focus:ring-2 focus:ring-sky-500 focus:outline-none mt-3 hidden">`;
+                    const showOther = answers[step.name] === 'Другая сфера';
+                    html += `<input type="text" name="occupation_other" placeholder="Напишите свой вариант"
+                                value="${showOther ? (answers['occupation_other'] || '') : ''}"
+                                class="w-full bg-neutral-800 border border-gray-700 rounded-lg p-3 text-white focus:ring-2 focus:ring-sky-500 focus:outline-none mt-3 ${showOther ? '' : 'hidden'}">`;
                     html += `</div>`;
                 }
 
@@ -417,7 +511,7 @@
                 if (stepIndex > 0) {
                     html += `<button type="button" id="form-back-btn" class="bg-gray-700 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition-colors duration-300 hover:bg-gray-600">Назад</button>`;
                 } else {
-                    html += `<div></div>`; // Placeholder
+                    html += `<div></div>`;
                 }
                 if (stepIndex < formSteps.length - 1) {
                     html += `<button type="button" id="form-next-btn" class="bg-gradient-to-br from-[#5FEAFF] to-[#4C87FF] text-white font-semibold py-3 px-8 rounded-full shadow-xl transition-all duration-300 hover:scale-105">Далее</button>`;
@@ -425,10 +519,18 @@
                     html += `<button type="submit" class="bg-gradient-to-br from-[#5FEAFF] to-[#4C87FF] text-white font-semibold py-3 px-8 rounded-full shadow-xl transition-all duration-300 hover:scale-105">Отправить</button>`;
                 }
                 html += `</div></div>`;
+
                 leadForm.innerHTML = html;
                 progressBarForm.style.width = `${((stepIndex + 1) / formSteps.length) * 100}%`;
 
-                // Add event listeners for new buttons
+                if (step.type === 'tel') {
+                    const phoneInput = document.querySelector('input[name="phone"]');
+                    phoneInputInstance = window.intlTelInput(phoneInput, {
+                        initialCountry: "ru",
+                        utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+                    });
+                }
+
                 document.getElementById('form-next-btn')?.addEventListener('click', nextStep);
                 document.getElementById('form-back-btn')?.addEventListener('click', prevStep);
                 document.querySelectorAll('input[name="occupation"]').forEach(radio => {
@@ -451,37 +553,33 @@
                     }
                 });
 
-                if (isValid && currentStep < formSteps.length - 1) {
-                    renderFormStep(currentStep + 1);
-                } else if (!isValid) {
-                    // Optionally show an error message
+                if (isValid) {
+                    saveStep();
+                    if (currentStep < formSteps.length - 1) {
+                        renderFormStep(currentStep + 1);
+                    }
                 }
             };
             
             const prevStep = () => {
-                if (currentStep > 0) {
-                    renderFormStep(currentStep - 1);
-                }
+                saveStep();
+                if (currentStep > 0) renderFormStep(currentStep - 1);
             };
 
             leadForm.addEventListener('submit', (e) => {
                 e.preventDefault();
-                const formData = new FormData(leadForm);
-                const data = {};
-                for (let [key, value] of formData.entries()) {
-                    if (key === 'occupation' && value === 'Другая сфера') {
-                        data[key] = formData.get('occupation_other') || 'Другая сфера';
-                    } else {
-                        data[key] = value;
-                    }
+                saveStep();
+                const payload = { ...answers };
+                if (payload.occupation === 'Другая сфера' && payload.occupation_other) {
+                    payload.occupation = payload.occupation_other;
                 }
-                delete data.occupation_other;
+                delete payload.occupation_other;
 
-                trackData({ form_submission: true, ...data });
-                
+                submitFormData(payload);
+
                 leadForm.classList.add('hidden');
                 thankYouScreen.classList.remove('hidden');
-                setTimeout(closeLeadForm, 3000);
+                setTimeout(closeLeadForm, 2500);
             });
 
             leadForm.addEventListener('keydown', (e) => {
@@ -495,6 +593,7 @@
                 }
             });
 
+            // старт
             renderLesson(currentLessonIndex);
         });
     </script>
