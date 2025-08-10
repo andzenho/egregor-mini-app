@@ -331,7 +331,6 @@
                 
                 const lesson = lessons[index];
                 lessonTitleElement.innerHTML = lesson.title;
-                // FIXED: Add timestamp to video src to force reload
                 lessonVideoContainer.innerHTML = lesson.videoIframe.replace(/(src="[^"]+)/, `$1&t=${new Date().getTime()}`);
 
                 if (index === 2) {
