@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Презентация наставничества EGREGOR SCHOOL</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Importing fonts: Montserrat for headings and Open Sans for text */
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Open+Sans:wght@400;600&display=swap');
+        body {
+            font-family: 'Open Sans', sans-serif; /* Main font */
+            background-color: #121212; /* Deep dark background */
+            color: #e5e7eb; /* Light default text */
+            scroll-behavior: smooth;
+        }
+        .font-heading {
+            font-family: 'Montserrat', sans-serif;
+        }
+        /* Gradient text style */
+        .gradient-text {
+            background-image: linear-gradient(to bottom right, #5FEAFF, #4C87FF);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        /* NEW: Animated gradient effect */
+        @keyframes gradient-animation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .animated-gradient-text {
+            background-image: linear-gradient(to right, #5FEAFF, #4C87FF, #5FEAFF);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            background-size: 200% auto;
+            animation: gradient-animation 8s ease-in-out infinite;
+        }
+        /* Custom style for list bullets */
+        .styled-list {
+            list-style: none;
+            padding-left: 0;
+        }
+        .styled-list li {
+            position: relative;
+            padding-left: 28px; /* Space for the bullet + gap */
+        }
+        .styled-list li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 8px; /* Fine-tuned for vertical alignment */
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: linear-gradient(to bottom right, #5FEAFF, #4C87FF);
+            box-shadow: 0 0 10px 2px rgba(95, 234, 255, 0.4);
+        }
+        .text-shadow {
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-6 md:p-8">
+
+    <div class="max-w-4xl mx-auto space-y-12 lg:space-y-16">
+
+        <!-- Hero Section -->
+        <header class="text-center py-10">
+            <h1 class="font-heading font-black text-4xl md:text-6xl text-white">Презентация наставничества <span class="animated-gradient-text">EGREGOR SCHOOL</span></h1>
+        </header>
+
+        <!-- Video Section -->
+        <section id="video-section">
+            <div class="bg-neutral-900 border border-gray-800 rounded-3xl p-4 md:p-6">
+                <!-- Placeholder for the video -->
+                <div class="aspect-video bg-neutral-800 rounded-2xl flex items-center justify-center">
+                    <p class="text-gray-500">Здесь будет ваше видео</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- NEW: Info block under video -->
+        <section>
+            <div class="bg-neutral-800/50 border border-gray-700/50 rounded-3xl p-6 text-center">
+                <p class="text-lg text-gray-300">На обучение можно попасть только через личный разбор с&nbsp;экспертом из&nbsp;моей команды, который поможет определиться, подходит ли&nbsp;тебе наше решение или нет.</p>
+            </div>
+        </section>
+
+        <!-- CTA Button -->
+        <section class="text-center">
+            <a href="#lead-form" class="inline-block bg-gradient-to-br from-[#5FEAFF] to-[#4C87FF] text-white font-bold py-4 px-10 rounded-full shadow-xl transition-all duration-300 hover:scale-105 text-shadow text-lg">
+                Записаться на разбор
+            </a>
+            <p class="text-center text-xs text-gray-500 mt-4">
+                Нажимая на&nbsp;кнопку «Записаться на разбор» вы&nbsp;соглашаетесь с&nbsp;<a href="https://www.gregedu.ru/polkon" target="_blank" class="underline hover:text-gray-300 transition-colors">Политикой конфиденциальности</a>&nbsp;и&nbsp;даёте&nbsp;<a href="https://www.gregedu.ru/soglasie" target="_blank" class="underline hover:text-gray-300 transition-colors">согласие на&nbsp;обработку персональных данных</a>.
+            </p>
+        </section>
+
+        <!-- Content Sections -->
+        <section class="space-y-12">
+            <div class="bg-neutral-900 border border-gray-800 rounded-3xl p-6 md:p-10">
+                <h2 class="font-heading text-3xl md:text-4xl font-bold text-white mb-6">Что такое&nbsp;личный разбор?</h2>
+                <p class="text-gray-400 mb-8 text-lg">Разборы&nbsp;— это мое искусство. В&nbsp;общей сложности я&nbsp;потратил на&nbsp;это >10&nbsp;000 часов</p>
+                <ul class="styled-list space-y-4 text-lg text-gray-300">
+                    <li>Это единственный вариант поработать со&nbsp;мной и&nbsp;моей командой бесплатно</li>
+                    <li>Отдельный продукт, цель которого&nbsp;открыть тебе глаза на&nbsp;то, как конкретно ты&nbsp;сможешь зарабатывать на&nbsp;маркетинге, и&nbsp;что для этого нужно сделать</li>
+                    <li>Формат работы: <span class="font-semibold text-white">бесплатный онлайн-созвон на&nbsp;40−60 минут по&nbsp;ZOOM</span></li>
+                </ul>
+            </div>
+
+            <div class="bg-neutral-900 border border-gray-800 rounded-3xl p-6 md:p-10">
+                <h2 class="font-heading text-3xl md:text-4xl font-bold text-white mb-8">Что ты&nbsp;получишь?</h2>
+                <ul class="styled-list space-y-4 text-lg text-gray-300">
+                    <li>Поможем выбрать одно из&nbsp;4-х направлений. Разберем, как тебе быстро изучить одно из&nbsp;них и&nbsp;построим готовый план действий</li>
+                    <li>Покажем, с&nbsp;кем работать, что писать, какие первые шаги сделать, чтобы быстро найти клиентов и&nbsp;получить деньги на&nbsp;услугах</li>
+                    <li>Расскажем про все подводные камни, погрузим тебя в&nbsp;основы маркетинга и&nbsp;работу с&nbsp;клиентами. Чтобы ты&nbsp;понимал, что можно ожидать в&nbsp;этой сфере</li>
+                    <li>Дадим взгляд со&nbsp;стороны. Раскроем на&nbsp;примере реальных кейсов то, как с&nbsp;нуля за&nbsp;1−2 месяца выйти на&nbsp;стабильные 100.000 рублей на&nbsp;маркетинге.</li>
+                    <li>Погрузим во&nbsp;внутрянку моих проектов, покажем, как внутри них строится работа. Как я&nbsp;стабильно получаю 700.000 рублей на&nbsp;маркетинге.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Final CTA -->
+        <section id="lead-form" class="text-center py-10">
+             <a href="#lead-form" class="inline-block bg-gradient-to-br from-[#5FEAFF] to-[#4C87FF] text-white font-bold py-4 px-10 rounded-full shadow-xl transition-all duration-300 hover:scale-105 text-shadow text-lg">
+                Записаться на бесплатный разбор
+            </a>
+            <p class="text-center text-xs text-gray-500 mt-4">
+                Нажимая на&nbsp;кнопку «Записаться на бесплатный разбор» вы&nbsp;соглашаетесь с&nbsp;<a href="https://www.gregedu.ru/polkon" target="_blank" class="underline hover:text-gray-300 transition-colors">Политикой конфиденциальности</a>&nbsp;и&nbsp;даёте&nbsp;<a href="https://www.gregedu.ru/soglasie" target="_blank" class="underline hover:text-gray-300 transition-colors">согласие на&nbsp;обработку персональных данных</a>.
+            </p>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-8 pt-8 border-t border-neutral-800 text-center text-xs text-neutral-500 space-y-4">
+            <div>
+                <p class="font-semibold text-neutral-400">ГРИГОРИЙ ШИЛОВ</p>
+                <p>ИП ШИЛОВ ГРИГОРИЙ ЕВГЕНЬЕВИЧ</p>
+            </div>
+            <div>
+                <p>ИНН: 291800299680</p>
+                <p>ОГРН: 321290100034280</p>
+            </div>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-x-4 gap-y-2">
+                <a href="mailto:shilov.greg@gmail.com" class="hover:text-neutral-300 transition-colors">shilov.greg@gmail.com</a>
+                <span class="hidden sm:inline">·</span>
+                <a href="https://t.me/shilovgreg" target="_blank" class="hover:text-neutral-300 transition-colors">Задать вопрос в TG: @shilovgreg</a>
+            </div>
+            <div class="flex flex-col sm:flex-row justify-center items-center gap-x-4 gap-y-2 pt-2">
+                <a href="https://www.gregedu.ru/polkon" target="_blank" class="hover:text-neutral-300 transition-colors">Политика конфиденциальности</a>
+                <span class="hidden sm:inline text-neutral-600">|</span>
+                <a href="https://www.gregedu.ru/soglasie" target="_blank" class="hover:text-neutral-300 transition-colors">Согласие на обработку ПД</a>
+                <span class="hidden sm:inline text-neutral-600">|</span>
+                <a href="https://www.gregedu.ru/offerta" target="_blank" class="hover:text-neutral-300 transition-colors">Оферта</a>
+            </div>
+        </footer>
+    </div>
+
+</body>
+</html>
