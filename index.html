@@ -331,7 +331,8 @@
                 
                 const lesson = lessons[index];
                 lessonTitleElement.innerHTML = lesson.title;
-                lessonVideoContainer.innerHTML = lesson.videoIframe;
+                // FIXED: Add timestamp to video src to force reload
+                lessonVideoContainer.innerHTML = lesson.videoIframe.replace(/(src="[^"]+)/, `$1&t=${new Date().getTime()}`);
 
                 if (index === 2) {
                     lessonContentContainer.innerHTML = `<blockquote class="bg-neutral-700/50 border-l-4 border-l-[#5FEAFF] text-gray-300 italic p-4 rounded-r-lg"><p>${lesson.content[0]}</p></blockquote>`;
