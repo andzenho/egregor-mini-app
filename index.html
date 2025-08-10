@@ -6,9 +6,9 @@
     <title>EGREGOR SCHOOL</title>
     <!-- Tailwind CSS for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- NEW: imask.js for phone number masking -->
+    <!-- imask.js for phone number masking -->
     <script src="https://unpkg.com/imask"></script>
-    <!-- NEW: intl-tel-input for country code selection -->
+    <!-- intl-tel-input for country code selection -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
     <style>
@@ -97,22 +97,22 @@
     <!-- Telegram Web Apps API -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
-<body class="p-2 sm:p-4 md:p-6">
+<body class="p-2 sm:p-4 md:p-8">
 
     <!-- Main application container -->
-    <div id="app-container" class="max-w-md mx-auto bg-neutral-900 p-6 rounded-3xl shadow-2xl border border-gray-800">
-        <h1 class="text-3xl font-bold text-center mb-6 font-heading bg-clip-text text-transparent bg-gradient-to-br from-[#5FEAFF] to-[#4C87FF]">EGREGOR SCHOOL</h1>
+    <div id="app-container" class="max-w-md lg:max-w-xl mx-auto bg-neutral-900 p-6 rounded-3xl shadow-2xl border border-gray-800">
+        <h1 class="text-3xl lg:text-4xl font-bold text-center mb-6 font-heading bg-clip-text text-transparent bg-gradient-to-br from-[#5FEAFF] to-[#4C87FF]">EGREGOR SCHOOL</h1>
 
         <div class="relative w-full h-2 rounded-full bg-gray-700 mb-6 overflow-hidden">
             <div id="progress-bar" class="h-2 rounded-full transition-all duration-500 ease-in-out" style="width: 0%;"></div>
         </div>
         
         <div id="lesson-container" class="bg-neutral-800 rounded-3xl shadow-lg p-6 mb-6">
-            <h2 id="lesson-title" class="text-2xl font-bold text-gray-100 mb-6 font-heading"></h2>
+            <h2 id="lesson-title" class="text-2xl lg:text-3xl font-bold text-gray-100 mb-6 font-heading"></h2>
             
             <div id="lesson-video-container" class="rounded-2xl mb-4 overflow-hidden shadow-lg"></div>
 
-            <div id="lesson-content-container" class="text-gray-300 text-base leading-relaxed mt-8"></div>
+            <div id="lesson-content-container" class="text-gray-300 text-base lg:text-lg leading-relaxed mt-8"></div>
 
             <div id="nav-buttons-container-main" class="mt-8"></div>
             
@@ -129,24 +129,26 @@
             </div>
             
             <div id="lesson-3-extra-content" class="hidden space-y-6 mt-8">
-                <div class="bg-neutral-900/50 rounded-2xl shadow-lg p-6 border border-gray-700/50">
-                    <h3 class="font-heading text-xl text-white mb-2">Что такое личный разбор?</h3>
-                    <p class="text-gray-400 mb-6 text-sm">Разборы&nbsp;— это мое искусство. В&nbsp;общей сложности я&nbsp;потратил на&nbsp;это >10&nbsp;000 часов</p>
-                    <ul class="styled-list space-y-4">
-                        <li>Это единственный вариант поработать со&nbsp;мной и&nbsp;моей командой бесплатно</li>
-                        <li>Это отдельный продукт, цель которого&nbsp;— открыть тебе глаза на&nbsp;то, как конкретно ты&nbsp;сможешь зарабатывать на&nbsp;маркетинге, и&nbsp;что для этого нужно сделать</li>
-                        <li>Формат работы: <span class="font-semibold text-white">бесплатный онлайн-созвон на&nbsp;40-60 минут по&nbsp;ZOOM</span></li>
-                    </ul>
-                </div>
-                <div class="bg-neutral-900/50 rounded-2xl shadow-lg p-6 border border-gray-700/50">
-                    <h3 class="font-heading text-xl text-white mb-6">Что ты&nbsp;получишь?</h3>
-                     <ul class="styled-list space-y-4">
-                        <li>Поможем выбрать одно из&nbsp;4-х направлений. Разберем, как тебе быстро изучить одно из&nbsp;них и&nbsp;построим готовый план действий</li>
-                        <li>Покажем, с&nbsp;кем работать, что писать, какие первые шаги сделать, чтобы&nbsp;быстро найти клиентов и&nbsp;получить деньги на&nbsp;услугах</li>
-                        <li>Расскажем про все подводные камни, погрузим тебя в&nbsp;основы маркетинга и&nbsp;работу с&nbsp;клиентами. Чтобы&nbsp;ты&nbsp;понимал, что можно ожидать в&nbsp;этой сфере</li>
-                        <li>Дадим взгляд со&nbsp;стороны. Раскроем на&nbsp;примере реальных кейсов то, как с&nbsp;нуля за&nbsp;1-2 месяца выйти на&nbsp;стабильные 100.000 рублей на&nbsp;маркетинге.</li>
-                        <li>Погрузим во&nbsp;внутрянку моих проектов, покажем, как внутри них строится работа. Как я&nbsp;стабильно получаю 700.000 рублей на&nbsp;маркетинге.</li>
-                    </ul>
+                <div class="lg:flex lg:gap-x-6 lg:space-y-0 space-y-6">
+                    <div class="bg-neutral-900/50 rounded-2xl shadow-lg p-6 border border-gray-700/50 lg:w-1/2">
+                        <h3 class="font-heading text-xl text-white mb-2">Что такое личный разбор?</h3>
+                        <p class="text-gray-400 mb-6 text-sm">Разборы&nbsp;— это мое искусство. В&nbsp;общей сложности я&nbsp;потратил на&nbsp;это >10&nbsp;000 часов</p>
+                        <ul class="styled-list space-y-4">
+                            <li>Это единственный вариант поработать со&nbsp;мной и&nbsp;моей командой бесплатно</li>
+                            <li>Это отдельный продукт, цель которого&nbsp;— открыть тебе глаза на&nbsp;то, как конкретно ты&nbsp;сможешь зарабатывать на&nbsp;маркетинге, и&nbsp;что для этого нужно сделать</li>
+                            <li>Формат работы: <span class="font-semibold text-white">бесплатный онлайн-созвон на&nbsp;40-60 минут по&nbsp;ZOOM</span></li>
+                        </ul>
+                    </div>
+                    <div class="bg-neutral-900/50 rounded-2xl shadow-lg p-6 border border-gray-700/50 lg:w-1/2">
+                        <h3 class="font-heading text-xl text-white mb-6">Что ты&nbsp;получишь?</h3>
+                         <ul class="styled-list space-y-4">
+                            <li>Поможем выбрать одно из&nbsp;4-х направлений. Разберем, как тебе быстро изучить одно из&nbsp;них и&nbsp;построим готовый план действий</li>
+                            <li>Покажем, с&nbsp;кем работать, что писать, какие первые шаги сделать, чтобы&nbsp;быстро найти клиентов и&nbsp;получить деньги на&nbsp;услугах</li>
+                            <li>Расскажем про все подводные камни, погрузим тебя в&nbsp;основы маркетинга и&nbsp;работу с&nbsp;клиентами.</li>
+                            <li>Дадим взгляд со&nbsp;стороны. Раскроем на&nbsp;примере реальных кейсов то, как с&nbsp;нуля за&nbsp;1-2 месяца выйти на&nbsp;стабильные 100.000 рублей на&nbsp;маркетинге.</li>
+                            <li>Погрузим во&nbsp;внутрянку моих проектов, покажем, как внутри них строится работа.</li>
+                        </ul>
+                    </div>
                 </div>
                 <div class="pt-4">
                      <button class="analytics-cta w-full bg-gradient-to-br from-[#5FEAFF] to-[#4C87FF] text-white font-semibold py-4 px-6 rounded-full shadow-xl transition-all duration-300 hover:scale-105 flex items-center justify-center text-shadow text-lg">
@@ -388,27 +390,37 @@
                 }
                 
                 container.innerHTML = finalHtml;
-
-                container.querySelector('#prev-lesson-button')?.addEventListener('click', () => {
-                    if (currentLessonIndex > 0) {
-                        currentLessonIndex--;
-                        localStorage.setItem(progressKey, currentLessonIndex);
-                        renderLesson(currentLessonIndex);
-                    }
-                });
-
-                container.querySelector('#next-lesson-button')?.addEventListener('click', () => {
-                    if (currentLessonIndex < lessons.length - 1) {
-                        currentLessonIndex++;
-                        localStorage.setItem(progressKey, currentLessonIndex);
-                        renderLesson(currentLessonIndex);
-                    }
-                });
-
-                container.querySelector('.analytics-cta')?.addEventListener('click', openLeadForm);
             };
 
-            // --- Логика формы ---
+            // --- DELEGATED EVENT LISTENER ---
+            document.body.addEventListener('click', (e) => {
+                const button = e.target.closest('button');
+                if (!button) return;
+
+                if (button.classList.contains('analytics-cta')) {
+                    openLeadForm();
+                    return;
+                }
+
+                switch (button.id) {
+                    case 'prev-lesson-button':
+                        if (currentLessonIndex > 0) {
+                            currentLessonIndex--;
+                            localStorage.setItem(progressKey, currentLessonIndex);
+                            renderLesson(currentLessonIndex);
+                        }
+                        break;
+                    case 'next-lesson-button':
+                        if (currentLessonIndex < lessons.length - 1) {
+                            currentLessonIndex++;
+                            localStorage.setItem(progressKey, currentLessonIndex);
+                            renderLesson(currentLessonIndex);
+                        }
+                        break;
+                }
+            });
+            
+            // --- LEAD FORM LOGIC ---
             const leadFormModal    = document.getElementById('lead-form-modal');
             const leadFormContent = document.getElementById('lead-form-content');
             const closeFormButton = document.getElementById('close-form-button');
